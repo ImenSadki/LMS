@@ -1,25 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, CardBody, CardTitle, CardText, Input } from 'reactstrap';
+import { Card, CardBody, CardTitle, CardText, Input, Button } from 'reactstrap';
+import { useNavigate } from 'react-router-dom'; 
 
 const ClientDashboard = () => {
     const [books, setBooks] = useState([]);
     const [searchTitle, setSearchTitle] = useState('');
     const [searchAuthor, setSearchAuthor] = useState('');
+    const navigate = useNavigate(); 
 
     useEffect(() => {
         const fetchBooks = async () => {
             const res = await axios.get('http://localhost:5000/api/books', {
-                params: { title: searchTitle, author: searchAuthor } 
+                params: { title: searchTitle, author: searchAuthor }
             });
             setBooks(res.data);
         };
         fetchBooks();
     }, [searchTitle, searchAuthor]); 
 
+    const handleLogout = () => {
+        localStorage.removeItem('token'); 
+        navigate('/'); 
+    };
+
+   
+    const handleBuyBook = (bookId) => {
+        navigate(`/payment/${bookId}`); 
+    };
+
     return (
         <div className="container mt-5">
             <h2 className="text-center">Livres Disponibles</h2>
+            <button onClick={handleLogout} className="btn btn-danger mb-4">Déconnexion</button> 
             <Input
                 type="text"
                 placeholder="Rechercher par titre"
@@ -44,6 +57,10 @@ const ClientDashboard = () => {
                                 <CardText>Auteur: {book.author}</CardText>
                                 <CardText>Description: {book.description}</CardText>
                                 <CardText>Prix: ${book.price}</CardText>
+                                {/* Bouton Acheter */}
+                                <Button onClick={() => handleBuyBook(book._id)} color="primary">
+                                    Acheter
+                                </Button>
                             </CardBody>
                         </Card>
                     </div>
@@ -54,3 +71,4 @@ const ClientDashboard = () => {
 };
 
 export default ClientDashboard;
+

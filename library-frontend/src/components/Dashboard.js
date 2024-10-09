@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; 
 import '../styles/styles.css'; 
 
 const Dashboard = () => {
     const [books, setBooks] = useState([]);
+    const navigate = useNavigate(); 
 
     useEffect(() => {
         const fetchBooks = async () => {
@@ -18,9 +19,15 @@ const Dashboard = () => {
         fetchBooks();
     }, []);
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/'); 
+    };
+
     return (
         <div className="container mt-5">
             <h2 className="text-center text-primary">Tableau de bord</h2>
+            <button onClick={handleLogout} className="btn btn-danger mb-4">Déconnexion</button> 
             <Link to="/add-book" className="btn btn-success mb-4">Ajouter un livre</Link>
             <h3 className="text-secondary">Liste des livres</h3>
             <div className="row">

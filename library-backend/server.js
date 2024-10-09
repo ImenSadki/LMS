@@ -5,10 +5,8 @@ const cors = require('cors');
 const app = express();
 const PORT = 5000;
 
-
 app.use(cors());
 app.use(express.json());
-
 
 mongoose.connect('mongodb://localhost:27017/library', {
     useNewUrlParser: true,
@@ -19,9 +17,8 @@ mongoose.connect('mongodb://localhost:27017/library', {
     console.error('Erreur de connexion :', err);
 });
 
-
 const authRoutes = require('./routes/auth');
-const bookRoutes = require('./routes/book'); // Si vous avez une route pour les livres
+const bookRoutes = require('./routes/book'); 
 
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
