@@ -1,4 +1,4 @@
-// models/Book.js
+
 const mongoose = require('mongoose');
 
 const BookSchema = new mongoose.Schema({

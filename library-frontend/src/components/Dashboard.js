@@ -5,7 +5,7 @@ import '../styles/styles.css';
 
 const Dashboard = () => {
     const [books, setBooks] = useState([]);
-    const [expandedBookId, setExpandedBookId] = useState(null); // État pour le livre dont les détails sont affichés
+    const [expandedBookId, setExpandedBookId] = useState(null); 
     const navigate = useNavigate(); 
 
     useEffect(() => {
@@ -26,7 +26,7 @@ const Dashboard = () => {
     };
 
     const handleDetailsClick = (bookId) => {
-        // Si le livre est déjà développé, on le ferme, sinon on l'ouvre
+        
         setExpandedBookId(expandedBookId === bookId ? null : bookId);
     };
 
@@ -43,7 +43,7 @@ const Dashboard = () => {
                             <div className="card-body">
                                 <h5 className="card-title">{book.title}</h5>
                                 <p className="card-text"><strong>Auteur:</strong> {book.author}</p>
-                                {expandedBookId === book._id && ( // Vérifie si le livre est développé
+                                {expandedBookId === book._id && ( 
                                     <div>
                                         <p className="card-text"><strong>Description:</strong> {book.description}</p>
                                         <p className="card-text"><strong>Prix:</strong> ${book.price}</p>
@@ -54,7 +54,7 @@ const Dashboard = () => {
                                         </button>
                                     </div>
                                 )}
-                                {expandedBookId !== book._id && ( // Montre le bouton "Détails" seulement si le livre n'est pas développé
+                                {expandedBookId !== book._id && ( 
                                     <button 
                                         onClick={() => handleDetailsClick(book._id)} 
                                         className="btn btn-primary">
