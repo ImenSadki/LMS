@@ -5,6 +5,7 @@ import '../styles/styles.css';
 
 const Dashboard = () => {
     const [books, setBooks] = useState([]);
+    const [expandedBookId, setExpandedBookId] = useState(null); // État pour le livre dont les détails sont affichés
     const navigate = useNavigate(); 
 
     useEffect(() => {
@@ -24,12 +25,17 @@ const Dashboard = () => {
         navigate('/'); 
     };
 
+    const handleDetailsClick = (bookId) => {
+        // Si le livre est déjà développé, on le ferme, sinon on l'ouvre
+        setExpandedBookId(expandedBookId === bookId ? null : bookId);
+    };
+
     return (
         <div className="container mt-5">
-            <h2 className="text-center text-primary">Tableau de bord</h2>
+            <h2 className="text-center text-white font-weight-bold">Tableau de bord</h2>
             <button onClick={handleLogout} className="btn btn-danger mb-4">Déconnexion</button> 
             <Link to="/add-book" className="btn btn-success mb-4">Ajouter un livre</Link>
-            <h3 className="text-secondary">Liste des livres</h3>
+            <h3 className="text-white font-weight-bold">Liste des livres</h3>
             <div className="row">
                 {books.map(book => (
                     <div className="col-md-4 mb-4" key={book._id}>
@@ -37,9 +43,24 @@ const Dashboard = () => {
                             <div className="card-body">
                                 <h5 className="card-title">{book.title}</h5>
                                 <p className="card-text"><strong>Auteur:</strong> {book.author}</p>
-                                <p className="card-text"><strong>Description:</strong> {book.description}</p>
-                                <p className="card-text"><strong>Prix:</strong> ${book.price}</p>
-                                <Link to={`/book/${book._id}`} className="btn btn-primary">Détails</Link>
+                                {expandedBookId === book._id && ( // Vérifie si le livre est développé
+                                    <div>
+                                        <p className="card-text"><strong>Description:</strong> {book.description}</p>
+                                        <p className="card-text"><strong>Prix:</strong> ${book.price}</p>
+                                        <button 
+                                            onClick={() => handleDetailsClick(book._id)} 
+                                            className="btn btn-secondary">
+                                            Fermer
+                                        </button>
+                                    </div>
+                                )}
+                                {expandedBookId !== book._id && ( // Montre le bouton "Détails" seulement si le livre n'est pas développé
+                                    <button 
+                                        onClick={() => handleDetailsClick(book._id)} 
+                                        className="btn btn-primary">
+                                        Détails
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

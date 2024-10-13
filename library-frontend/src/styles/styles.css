@@ -1,4 +1,4 @@
-body {
+/*body {
     background-color: #f8f9fa; 
     font-family: 'Roboto', sans-serif; 
 }
@@ -37,4 +37,28 @@ input:focus, select:focus {
 
 .text-danger {
     margin-top: 15px; 
+}
+*/
+
+
+.card {
+    background-color: rgba(255, 255, 255, 0.9); /* Fond blanc légèrement transparent */
+    border: 1px solid #ccc; /* Bordure pour mieux délimiter la carte */
+    border-radius: 0.5rem; /* Coins arrondis */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre portée */
+}
+
+.card-title,
+.card-text {
+    color: #333; /* Couleur de texte sombre pour un meilleur contraste */
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7); /* Ombre légère pour le texte */
+}
+
+
+.text-white {
+    color: white; /* Rendre le texte en blanc */
+}
+
+.font-weight-bold {
+    font-weight: bold; /* Rendre le texte en gras */
 }

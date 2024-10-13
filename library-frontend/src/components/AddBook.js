@@ -7,31 +7,37 @@ const AddBook = () => {
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [alert, setAlert] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        setIsLoading(true);
+
         const token = localStorage.getItem('token');
-        console.log('Token récupéré:', token);  
+        console.log('Token récupéré:', token);
 
         try {
-            const response = await axios.post('http://localhost:5000/api/books', 
-                { title, author, description, price }, 
+            const response = await axios.post('http://localhost:5000/api/books',
+                { title, author, description, price },
                 {
-                    headers: { 
-                        'Authorization': `Bearer ${token}`  
+                    headers: {
+                        'Authorization': `Bearer ${token}`
                     }
                 }
             );
-            console.log('Réponse du serveur:', response.data);  
+            console.log('Réponse du serveur:', response.data);
+            
             setAlert({ type: 'success', message: 'Livre ajouté avec succès !' });
             setTitle('');
             setAuthor('');
             setDescription('');
             setPrice('');
         } catch (error) {
-            console.error('Erreur lors de la requête:', error.response?.data || error.message);  
+            console.error('Erreur lors de la requête:', error.response?.data || error.message);
+            
             setAlert({ type: 'danger', message: 'Erreur lors de l\'ajout du livre.' });
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -56,7 +62,9 @@ const AddBook = () => {
                 <div className="form-group">
                     <input type="number" className="form-control" placeholder="Prix" value={price} onChange={(e) => setPrice(e.target.value)} required />
                 </div>
-                <button type="submit" className="btn btn-primary btn-block">Ajouter</button>
+                <button type="submit" className="btn btn-primary btn-block" disabled={isLoading}>
+                    {isLoading ? 'Ajout en cours...' : 'Ajouter'}
+                </button>
             </form>
         </div>
     );

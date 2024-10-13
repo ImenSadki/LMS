@@ -40,7 +40,7 @@ const LoginRegister = () => {
 
     return (
         <div className="container">
-            <h2 className="text-center">Connexion / Inscription</h2>
+            <h2 className="text-center text-white font-weight-bold">Connexion / Inscription</h2>
 
             <div className="row">
                

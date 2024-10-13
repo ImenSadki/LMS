@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -18,10 +19,11 @@ mongoose.connect('mongodb://localhost:27017/library', {
 });
 
 const authRoutes = require('./routes/auth');
-const bookRoutes = require('./routes/book'); 
+const bookRoutes = require('./routes/book');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
+
 
 app.listen(PORT, () => {
     console.log(`Serveur en cours d'exécution sur le port ${PORT}`);

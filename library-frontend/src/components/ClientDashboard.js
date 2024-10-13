@@ -31,7 +31,7 @@ const ClientDashboard = () => {
 
     return (
         <div className="container mt-5">
-            <h2 className="text-center">Livres Disponibles</h2>
+            <h2 className="text-center text-white font-weight-bold">Livres Disponibles</h2>
             <button onClick={handleLogout} className="btn btn-danger mb-4">Déconnexion</button> 
             <Input
                 type="text"
@@ -47,7 +47,7 @@ const ClientDashboard = () => {
                 onChange={(e) => setSearchAuthor(e.target.value)}
                 className="mb-3"
             />
-            <h3 className="mt-4">Liste des livres</h3>
+            <h3 className="text-white font-weight-bold">Liste des livres</h3>
             <div className="row">
                 {books.map(book => (
                     <div className="col-md-4 mb-4" key={book._id}>
