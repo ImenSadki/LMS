@@ -49,16 +49,22 @@ router.get('/', async (req, res) => {
 
 // Route DELETE : Supprimer un livre (réservée aux admins)
 router.delete('/:id', verifyToken, async (req, res) => {
-    if (req.userRole !== 'admin') {
-        return res.status(403).json({ message: 'Accès interdit. Rôle admin requis.' });
-    }
     try {
+        if (req.userRole !== 'admin') {
+            return res.status(403).json({ message: 'Accès interdit. Rôle admin requis.' });
+        }
+
         const book = await Book.findByIdAndDelete(req.params.id);
-        if (!book) return res.status(404).json({ message: 'Livre non trouvé' });
+        if (!book) {
+            return res.status(404).json({ message: 'Livre non trouvé' });
+        }
+
         res.status(200).json({ message: 'Livre supprimé avec succès' });
     } catch (error) {
+        console.error('Erreur serveur:', error);
         res.status(500).json({ message: 'Erreur lors de la suppression du livre' });
     }
 });
+
 
 module.exports = router;
