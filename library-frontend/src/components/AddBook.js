@@ -12,30 +12,43 @@ const AddBook = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setAlert(null);
 
         const token = localStorage.getItem('token');
-        console.log('Token récupéré:', token);
+        console.log('Token récupéré:', token); // Log du token
+
+        if (!token) {
+            setAlert({ type: 'danger', message: 'Veuillez vous connecter pour ajouter un livre.' });
+            setIsLoading(false);
+            return;
+        }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/books',
-                { title, author, description, price },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+            const bookData = { title, author, description, price: Number(price) };
+            console.log('Données du livre à envoyer:', bookData);
+
+            await axios.post(
+                'http://localhost:5000/api/books',
+                bookData,
+                { 
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    } 
                 }
             );
-            console.log('Réponse du serveur:', response.data);
-            
+
             setAlert({ type: 'success', message: 'Livre ajouté avec succès !' });
             setTitle('');
             setAuthor('');
             setDescription('');
             setPrice('');
         } catch (error) {
-            console.error('Erreur lors de la requête:', error.response?.data || error.message);
-            
-            setAlert({ type: 'danger', message: 'Erreur lors de l\'ajout du livre.' });
+            console.error('Erreur détaillée:', error.response?.data || error.message);
+            setAlert({ 
+                type: 'danger', 
+                message: `Erreur lors de l'ajout du livre: ${error.response?.data?.message || error.message}` 
+            });
         } finally {
             setIsLoading(false);
         }
@@ -51,16 +64,43 @@ const AddBook = () => {
             )}
             <form onSubmit={handleSubmit} className="mt-4">
                 <div className="form-group">
-                    <input type="text" className="form-control" placeholder="Titre" value={title} onChange={(e) => setTitle(e.target.value)} required />
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Titre"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        required
+                    />
                 </div>
                 <div className="form-group">
-                    <input type="text" className="form-control" placeholder="Auteur" value={author} onChange={(e) => setAuthor(e.target.value)} required />
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Auteur"
+                        value={author}
+                        onChange={(e) => setAuthor(e.target.value)}
+                        required
+                    />
                 </div>
                 <div className="form-group">
-                    <textarea className="form-control" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} required></textarea>
+                    <textarea
+                        className="form-control"
+                        placeholder="Description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        required
+                    />
                 </div>
                 <div className="form-group">
-                    <input type="number" className="form-control" placeholder="Prix" value={price} onChange={(e) => setPrice(e.target.value)} required />
+                    <input
+                        type="number"
+                        className="form-control"
+                        placeholder="Prix"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        required
+                    />
                 </div>
                 <button type="submit" className="btn btn-primary btn-block" disabled={isLoading}>
                     {isLoading ? 'Ajout en cours...' : 'Ajouter'}

@@ -9,16 +9,26 @@ const Dashboard = () => {
     const navigate = useNavigate(); 
 
     useEffect(() => {
-        const fetchBooks = async () => {
-            try {
-                const res = await axios.get('http://localhost:5000/api/books');
-                setBooks(res.data);
-            } catch (err) {
-                console.error('Erreur lors de la récupération des livres:', err);
-            }
-        };
-        fetchBooks();
+        fetchBooks(); // Déplacé dans une fonction pour la réutiliser
     }, []);
+
+    const fetchBooks = async () => {
+        try {
+            const res = await axios.get('http://localhost:5000/api/books');
+            setBooks(res.data);
+        } catch (err) {
+            console.error('Erreur lors de la récupération des livres:', err);
+        }
+    };
+
+    const handleDelete = async (bookId) => {
+        try {
+            await axios.delete(`http://localhost:5000/api/books/${bookId}`);
+            setBooks(books.filter(book => book._id !== bookId)); // Met à jour la liste localement
+        } catch (err) {
+            console.error('Erreur lors de la suppression du livre:', err);
+        }
+    };
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -26,7 +36,6 @@ const Dashboard = () => {
     };
 
     const handleDetailsClick = (bookId) => {
-        
         setExpandedBookId(expandedBookId === bookId ? null : bookId);
     };
 
@@ -43,7 +52,7 @@ const Dashboard = () => {
                             <div className="card-body">
                                 <h5 className="card-title">{book.title}</h5>
                                 <p className="card-text"><strong>Auteur:</strong> {book.author}</p>
-                                {expandedBookId === book._id && ( 
+                                {expandedBookId === book._id && (
                                     <div>
                                         <p className="card-text"><strong>Description:</strong> {book.description}</p>
                                         <p className="card-text"><strong>Prix:</strong> ${book.price}</p>
@@ -54,13 +63,18 @@ const Dashboard = () => {
                                         </button>
                                     </div>
                                 )}
-                                {expandedBookId !== book._id && ( 
+                                {expandedBookId !== book._id && (
                                     <button 
                                         onClick={() => handleDetailsClick(book._id)} 
-                                        className="btn btn-primary">
+                                        className="btn btn-primary mr-2">
                                         Détails
                                     </button>
                                 )}
+                                <button 
+                                    onClick={() => handleDelete(book._id)} 
+                                    className="btn btn-danger">
+                                    Supprimer
+                                </button>
                             </div>
                         </div>
                     </div>
