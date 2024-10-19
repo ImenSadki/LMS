@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
@@ -61,6 +62,17 @@ const Dashboard = () => {
                             <div className="card-body">
                                 <h5 className="card-title">{book.title}</h5>
                                 <p className="card-text"><strong>Auteur:</strong> {book.author}</p>
+                                
+                                {/* Affichage de l'image */}
+                                {book.image && (
+                                    <img 
+                                        src={book.image} // Chemin de l'image
+                                        alt={book.title}
+                                        className="img-fluid mb-2"
+                                        style={{ maxHeight: '200px', width: 'auto' }} // Ajustez le style selon vos besoins
+                                    />
+                                )}
+                                
                                 {expandedBookId === book._id && (
                                     <div>
                                         <p className="card-text"><strong>Description:</strong> {book.description}</p>

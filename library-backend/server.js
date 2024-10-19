@@ -23,7 +23,8 @@ const bookRoutes = require('./routes/book');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
-
+app.use('/uploads', express.static('uploads'));
+app.use('/api', bookRoutes); 
 
 app.listen(PORT, () => {
     console.log(`Serveur en cours d'exécution sur le port ${PORT}`);

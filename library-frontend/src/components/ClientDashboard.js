@@ -24,7 +24,6 @@ const ClientDashboard = () => {
         navigate('/'); 
     };
 
-   
     const handleBuyBook = (bookId) => {
         navigate(`/payment/${bookId}`); 
     };
@@ -55,6 +54,17 @@ const ClientDashboard = () => {
                             <CardBody>
                                 <CardTitle tag="h5">{book.title}</CardTitle>
                                 <CardText>Auteur: {book.author}</CardText>
+                                
+                                {/* Affichage de l'image */}
+                                {book.image && (
+                                    <img 
+                                        src={book.image} // Chemin de l'image
+                                        alt={book.title}
+                                        className="img-fluid mb-2"
+                                        style={{ width: '100px', height: 'auto' }} // Ajustez la taille ici
+                                    />
+                                )}
+                                
                                 <CardText>Description: {book.description}</CardText>
                                 <CardText>Prix: ${book.price}</CardText>
                                 {/* Bouton Acheter */}
@@ -71,4 +81,3 @@ const ClientDashboard = () => {
 };
 
 export default ClientDashboard;
-

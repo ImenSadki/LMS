@@ -62,3 +62,10 @@ input:focus, select:focus {
 .font-weight-bold {
     font-weight: bold; /* Rendre le texte en gras */
 }
+
+
+/* styles.css */
+.image-small {
+    width: 100px; /* Changez cette valeur selon vos besoins */
+    height: auto; /* Maintient le rapport d'aspect */
+}

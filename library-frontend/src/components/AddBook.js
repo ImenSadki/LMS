@@ -6,6 +6,8 @@ const AddBook = () => {
     const [author, setAuthor] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
+    const [image, setImage] = useState(null);
+    const [pdf, setPdf] = useState(null);
     const [alert, setAlert] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -15,8 +17,6 @@ const AddBook = () => {
         setAlert(null);
 
         const token = localStorage.getItem('token');
-        console.log('Token récupéré:', token); // Log du token
-
         if (!token) {
             setAlert({ type: 'danger', message: 'Veuillez vous connecter pour ajouter un livre.' });
             setIsLoading(false);
@@ -24,25 +24,33 @@ const AddBook = () => {
         }
 
         try {
-            const bookData = { title, author, description, price: Number(price) };
-            console.log('Données du livre à envoyer:', bookData);
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('author', author);
+            formData.append('description', description);
+            formData.append('price', price);
+            if (image) formData.append('image', image);
+            if (pdf) formData.append('pdf', pdf);
 
             await axios.post(
                 'http://localhost:5000/api/books',
-                bookData,
+                formData,
                 { 
                     headers: { 
                         'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'multipart/form-data'
                     } 
                 }
             );
 
             setAlert({ type: 'success', message: 'Livre ajouté avec succès !' });
+            // Reset form
             setTitle('');
             setAuthor('');
             setDescription('');
             setPrice('');
+            setImage(null);
+            setPdf(null);
         } catch (error) {
             console.error('Erreur détaillée:', error.response?.data || error.message);
             setAlert({ 
@@ -63,7 +71,7 @@ const AddBook = () => {
                 </div>
             )}
             <form onSubmit={handleSubmit} className="mt-4">
-                <div className="form-group">
+                <div className="form-group mb-3">
                     <input
                         type="text"
                         className="form-control"
@@ -73,7 +81,7 @@ const AddBook = () => {
                         required
                     />
                 </div>
-                <div className="form-group">
+                <div className="form-group mb-3">
                     <input
                         type="text"
                         className="form-control"
@@ -83,7 +91,7 @@ const AddBook = () => {
                         required
                     />
                 </div>
-                <div className="form-group">
+                <div className="form-group mb-3">
                     <textarea
                         className="form-control"
                         placeholder="Description"
@@ -92,7 +100,7 @@ const AddBook = () => {
                         required
                     />
                 </div>
-                <div className="form-group">
+                <div className="form-group mb-3">
                     <input
                         type="number"
                         className="form-control"
@@ -100,6 +108,24 @@ const AddBook = () => {
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
                         required
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label>Image du livre</label>
+                    <input
+                        type="file"
+                        className="form-control"
+                        accept="image/jpeg,image/png"
+                        onChange={(e) => setImage(e.target.files[0])}
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label>Fichier PDF</label>
+                    <input
+                        type="file"
+                        className="form-control"
+                        accept="application/pdf"
+                        onChange={(e) => setPdf(e.target.files[0])}
                     />
                 </div>
                 <button type="submit" className="btn btn-primary btn-block" disabled={isLoading}>
