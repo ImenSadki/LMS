@@ -1,117 +1,144 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Auth.css'; 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/Auth.css'; // CSS personnalisé supplémentaire
 
 const LoginRegister = () => {
-    
-    const [loginUsername, setLoginUsername] = useState('');
-    const [loginPassword, setLoginPassword] = useState('');
-    const [registerUsername, setRegisterUsername] = useState('');
-    const [registerPassword, setRegisterPassword] = useState('');
-    const [role, setRole] = useState('client');
-    const [error, setError] = useState('');
+    const [isRegister, setIsRegister] = useState(false); // Gère le basculement entre connexion et inscription
     const navigate = useNavigate();
 
-    
-    const handleLoginSubmit = async (e) => {
-        e.preventDefault();
+    const handleLogin = async (username, password) => {
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', { username: loginUsername, password: loginPassword });
+            const res = await axios.post('http://localhost:5000/api/auth/login', { username, password });
             localStorage.setItem('token', res.data.token);
             navigate(res.data.role === 'admin' ? '/dashboard' : '/client-dashboard');
         } catch (err) {
-            setError('Nom d’utilisateur ou mot de passe incorrect.');
+            alert('Nom d’utilisateur ou mot de passe incorrect.');
         }
     };
 
-   
-    const handleRegisterSubmit = async (e) => {
-        e.preventDefault();
+    const handleRegister = async (username, password, role) => {
         try {
-            await axios.post('http://localhost:5000/api/auth/register', { username: registerUsername, password: registerPassword, role });
+            await axios.post('http://localhost:5000/api/auth/register', { username, password, role });
             alert('Inscription réussie !');
-            setRegisterUsername('');
-            setRegisterPassword('');
+            setIsRegister(false); // Retour à la connexion après inscription
         } catch (err) {
-            setError('Erreur lors de l\'inscription. Vérifiez si le nom d’utilisateur existe déjà.');
+            alert('Erreur lors de l’inscription. Essayez un autre nom d’utilisateur.');
         }
     };
 
     return (
-        <div className="container">
-            <h2 className="text-center text-white font-weight-bold">Connexion / Inscription</h2>
-
-            <div className="row">
-               
-                <div className="col-md-6">
-                    <div className="card">
-                        <form onSubmit={handleLoginSubmit}>
-                            <h3>Connexion</h3>
-                            <div className="form-group">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Nom d'utilisateur"
-                                    value={loginUsername}
-                                    onChange={(e) => setLoginUsername(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="form-group">
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    placeholder="Mot de passe"
-                                    value={loginPassword}
-                                    onChange={(e) => setLoginPassword(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <button type="submit" className="btn btn-primary btn-block">Se connecter</button>
-                        </form>
-                    </div>
-                </div>
-
-            
-                <div className="col-md-6">
-                    <div className="card">
-                        <form onSubmit={handleRegisterSubmit} className="mt-4">
-                            <h3>Inscription</h3>
-                            <div className="form-group">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Nom d'utilisateur"
-                                    value={registerUsername}
-                                    onChange={(e) => setRegisterUsername(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="form-group">
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    placeholder="Mot de passe"
-                                    value={registerPassword}
-                                    onChange={(e) => setRegisterPassword(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="form-group">
-                                <select className="form-control" value={role} onChange={(e) => setRole(e.target.value)}>
-                                    <option value="client">Client</option>
-                                    <option value="admin">Admin</option>
-                                </select>
-                            </div>
-                            <button type="submit" className="btn btn-primary btn-block">S'inscrire</button>
-                        </form>
-                    </div>
-                </div>
+        <div className="container d-flex align-items-center justify-content-center vh-100 bg-light">
+            <div className="card p-5 shadow-lg" style={{ maxWidth: '500px', width: '100%' }}>
+                <h2 className="text-center mb-4">{isRegister ? "S'inscrire" : 'Se connecter'}</h2>
+                {isRegister ? (
+                    <RegisterForm onRegister={handleRegister} setIsRegister={setIsRegister} />
+                ) : (
+                    <LoginForm onLogin={handleLogin} setIsRegister={setIsRegister} />
+                )}
             </div>
-
-            {error && <p className="text-danger mt-3">{error}</p>}
         </div>
+    );
+};
+
+const LoginForm = ({ onLogin, setIsRegister }) => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onLogin(username, password);
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+                <label className="form-label">Nom d'utilisateur</label>
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Entrer votre nom d'utilisateur"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                />
+            </div>
+            <div className="mb-3">
+                <label className="form-label">Mot de passe</label>
+                <input
+                    type="password"
+                    className="form-control"
+                    placeholder="Entrer votre mot de passe"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+            </div>
+            <button type="submit" className="btn btn-primary w-100 mb-3">
+                Connexion
+            </button>
+            <p className="text-center">
+                Pas encore inscrit ?{' '}
+                <span className="text-primary" style={{ cursor: 'pointer' }} onClick={() => setIsRegister(true)}>
+                    Créez un compte
+                </span>
+            </p>
+        </form>
+    );
+};
+
+const RegisterForm = ({ onRegister, setIsRegister }) => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [role, setRole] = useState('client');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onRegister(username, password, role);
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+                <label className="form-label">Nom d'utilisateur</label>
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Choisir un nom d'utilisateur"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                />
+            </div>
+            <div className="mb-3">
+                <label className="form-label">Mot de passe</label>
+                <input
+                    type="password"
+                    className="form-control"
+                    placeholder="Créer un mot de passe"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+            </div>
+            <div className="mb-3">
+                <label className="form-label">Rôle</label>
+                <select className="form-select" value={role} onChange={(e) => setRole(e.target.value)}>
+                    <option value="client">Client</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <button type="submit" className="btn btn-success w-100 mb-3">
+                Inscription
+            </button>
+            <p className="text-center">
+                Déjà inscrit ?{' '}
+                <span className="text-primary" style={{ cursor: 'pointer' }} onClick={() => setIsRegister(false)}>
+                    Connectez-vous
+                </span>
+            </p>
+        </form>
     );
 };
 

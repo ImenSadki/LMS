@@ -41,3 +41,8 @@ body {
     margin: 0; 
 }
 
+.card {
+    background-color: transparent; /* Supprimer le fond blanc */
+    border: none; /* Supprimer la bordure */
+    box-shadow: none; /* Supprimer l'ombre */
+}
